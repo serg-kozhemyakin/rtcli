@@ -21,20 +21,24 @@
         (args:make-option (d dest)      (required: "DIR")  "Destination dir")
         (args:make-option (a add)       #:none     "Add specified torrent"
                           (set! mode 'add))
-        (args:make-option (r remove)    #:none     "Remove specified torrent"
-                          (set! mode 'remove))
+        (args:make-option (e erase)     #:none     "Remove specified torrent"
+                          (set! mode 'erase))
+        (args:make-option (o open)      #:none     "Open specified torrent"
+                          (set! mode 'open))
+        (args:make-option (q close)     #:none     "Close specified torrent"
+                          (set! mode 'close))
         (args:make-option (l list)      #:none     "List registered torrents"
                           (set! mode 'list))
+        (args:make-option (r resume)    #:none     "Resume specified torrent"
+                          (set! mode 'resume))
         (args:make-option (p pause)     #:none     "Pause specified torrent"
                           (set! mode 'pause))
-        (args:make-option (c continue)  #:none     "Continue specified torrent"
-                          (set! mode 'resume))
-        (args:make-option (s stop)      #:none     "Stop specified torrent"
-                          (set! mode 'stop))
         (args:make-option (x calc)      #:none     "Calculate hash for torrent file"
                           (set! mode 'calc))
         (args:make-option (z call)      #:none     "Call specified xml-rpc function with parameters and print results"
                           (set! mode 'call))
+        (args:make-option (shutdown)    #:none     "Shutdown rTorrent"
+                          (set! mode 'shutdown))
         (args:make-option (v version)   #:none     "Display version"
                           (print "rtcli: " version:date "(" version:id ")")
                           (exit))
@@ -52,14 +56,20 @@
 
 (define (main)
   (receive (options operands) (args:parse (command-line-arguments) opts)
-    (cond
-     ((not mode) (usage))
-     ((eq? mode 'calc) (calc-torrent-hash options))
-     ((eq? mode 'add) (add-torrent options))
-     ((eq? mode 'remove) (remove-torrent options))
-     ((eq? mode 'call) (call-rtorrent options operands))
-     ((eq? mode 'list) (list-torrents options))
-     )))
+    (let* ((defined-commands `((calc . ,calc-torrent-hash)
+                               (add . ,add-torrent)
+                               (erase . ,erase-torrent)
+                               (list . ,list-torrents)
+                               (pause . ,pause-torrent)
+                               (resume . ,resume-torrent)
+                               (open . ,open-torrent)
+                               (close . ,close-torrent)))
+           (code (alist-ref mode defined-commands)))
+      (cond
+       ((not mode) (usage))
+       ((eq? mode 'call) (call-rtorrent options operands))
+       (code (code options))
+       (else (print "Unimplemented operation '" mode "' called"))))))
 
 (main)
 

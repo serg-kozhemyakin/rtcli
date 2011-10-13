@@ -101,7 +101,7 @@
       (begin
         (let ((rt-ver (rt:cmd con 'system.client_version))
               (rt-libver (rt:cmd con 'system.library_version)))
-          (print "Connect to rTorrent v" rt-ver "/libtorrent v" rt-libver))
+          (print "Connected to rTorrent v" rt-ver "/libtorrent v" rt-libver))
         (print "Retrieving list of all defined xml-rpc methods.")
         (let ((rt-methods (vector->list (rt:cmd con 'system.listMethods))))
           (print "There's " (length rt-methods) " xml-rpc methods defined.")
@@ -157,7 +157,7 @@
          (hash-table-ref tor "info"))
     (string->sha1sum (bencode (hash-table-ref tor "info"))))
    ((and (string? tor)
-         (= 20 (string-length tor))) tor)
+         (= 40 (string-length tor))) tor)
    ((file-exists? tor)
     (let* ((torrent (call-with-input-file tor (lambda (p) (bdecode p))))
            (_ (if (not torrent)

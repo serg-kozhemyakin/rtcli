@@ -12,10 +12,41 @@
                       ))) params)
     (if have-missed-params (exit 1))))
 
+(define (generic-torrent-command options validation-parameters code)
+  (apply validate-parameters options validation-parameters)
+  (let ((th (calculate-torrent-hash (alist-ref 'torrent options)))
+        (connection (make-connection (alist-ref 'host options))))
+    (if (and th connection)
+        (code connection th))))
+
+(define (oneline-torrent-command options validation-parameters cmd)
+  (generic-torrent-command options validation-parameters
+                           (lambda (c t)
+                             (rt:cmd c cmd t))))
+
 (define (calc-torrent-hash options)
   (validate-parameters options 'torrent)
   (let ((tor (alist-ref 'torrent options)))
     (print (calculate-torrent-hash tor))))
+
+(define (erase-torrent options)
+  (generic-torrent-command options '(torrent host)
+                           (lambda (c t)
+                             (print "Removing torrent with hash '" t "'")
+                             (rt:cmd c 'd.stop t)
+                             (rt:cmd c 'd.erase t))))
+
+(define (pause-torrent options)
+  (oneline-torrent-command options '(torrent host) 'd.pause))
+
+(define (resume-torrent options)
+  (oneline-torrent-command options '(torrent host) 'd.resume))
+
+(define (open-torrent options)
+  (oneline-torrent-command options '(torrent host) 'd.open))
+
+(define (close-torrent options)
+  (oneline-torrent-command options '(torrent host) 'd.close))
 
 (define (add-torrent options)
   (validate-parameters options 'torrent 'host)
@@ -45,7 +76,6 @@
                  (do ((count 0 (+ 1 cont)))
                      ((> count 5) #f)
                    (let ((tmp (rt:cmd connection 'd.state th)))
-                     (print tmp)
                      (if tmp
                          (break #t)
                          (sleep 1))))))
@@ -60,21 +90,22 @@
           (print "Invalid connection url specified '" url "'")
           (exit 1)))))
 
-(define (remove-torrent options)
-  (validate-parameters options 'torrent 'host)
-  (let ((th (calculate-torrent-hash (alist-ref 'torrent options)))
-        (connection (make-connection (alist-ref 'host options))))
-    (if (and th connection)
-        (begin
-          (print "Removing torrent with hash '" th "'")
-          (rt:cmd connection 'd.stop th)
-          (rt:cmd connection 'd.erase th)))))
-
 (define (list-torrents options)
   (define (print-torrent-info c t)
     (let* ((left-bytes (rt:cmd c 'd.get_left_bytes t))
-           (down-bytes (rt:cmd c 'd.completed_bytes t)))
-      (print t " [" down-bytes "/" (+ down-bytes left-bytes) "]")))
+           (down-bytes (rt:cmd c 'd.completed_bytes t))
+           (down-rate (rt:cmd c 'd.down.rate t))
+           (up-rate (rt:cmd c 'd.up.rate t))
+           (down-total (rt:cmd c 'd.down.total t))
+           (up-total (rt:cmd c 'd.up.total t))
+           (ratio (rt:cmd c 'd.ratio t))
+           (name (rt:cmd c 'd.name t))
+           (state (rt:cmd c 'd.state t)))
+      (print name "/" t " [" down-bytes "/" (+ down-bytes left-bytes) "]"
+             " (" up-rate "/" down-rate ")"
+             " {" up-total "/" down-total "}"
+             " " ratio
+             " " (if state "Started" "Stopped"))))
   (validate-parameters options 'host)
   (let ((connection (make-connection (alist-ref 'host options))))
     (if connection
