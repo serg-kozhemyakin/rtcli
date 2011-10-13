@@ -1,7 +1,7 @@
-(declare (unit rtorrent-connection))
-(declare (uses bencode))
+(declare (unit rtorrent-connection)
+         (uses bencode
+               rtorrent-commands))
 
-(import chicken scheme)
 (use srfi-13)
 (use coops)
 (use xml-rpc-client xml-rpc-lolevel)
@@ -77,20 +77,36 @@
   (socket-close (connection-client con)))
 
 (define (make-connection url)
-  (call/cc
-   (lambda (return)
-     (if (substring=? url "http" 0 0 4)
-         (return (make <xml-rpc-connection> 'url url)))
-     (if (file-exists? url)
-         (return (make <scgi-socket-connection> 'socket url)))
-     (let* ((parts (string-split url ":"))
-            (_ (if (not (= 2 (length parts))) (return #f)))
-            (port (string->number (cadr parts))))
-       (if (and port
-            (> port 1024)
-            (< port 64565))
-           (return (make <scgi-tcp-connection> 'host (car parts) 'port port))))
-     #f)))
+  (validate-connection
+   (call/cc
+     (lambda (return)
+       (if (substring=? url "http" 0 0 4)
+           (return (make <xml-rpc-connection> 'url url)))
+       (if (file-exists? url)
+           (return (make <scgi-socket-connection> 'socket url)))
+       (let* ((parts (string-split url ":"))
+              (_ (if (not (= 2 (length parts))) (return #f)))
+              (port (string->number (cadr parts))))
+         (if (and port
+                  (> port 1024)
+                  (< port 64565))
+             (return (make <scgi-tcp-connection> 'host (car parts) 'port port))))
+       #f))))
+
+(define (validate-connection con)
+  (if (not con)
+      (begin
+        (print "Can't create connection with specified parameters")
+        (exit 1))
+      (begin
+        (let ((rt-ver (rt:cmd con 'system.client_version))
+              (rt-libver (rt:cmd con 'system.library_version)))
+          (print "Connect to rTorrent v" rt-ver "/libtorrent v" rt-libver))
+        (print "Retrieving list of all defined xml-rpc methods.")
+        (let ((rt-methods (vector->list (rt:cmd con 'system.listMethods))))
+          (print "There's " (length rt-methods) " xml-rpc methods defined.")
+          (register-xml-rpc-commands rt-methods)
+          con))))
 
 (define-generic (send connection rest))
 
@@ -143,6 +159,11 @@
    ((and (string? tor)
          (= 20 (string-length tor))) tor)
    ((file-exists? tor)
-    (calculate-torrent-hash (call-with-input-file tor (lambda (p) (bdecode p)))))
+    (let* ((torrent (call-with-input-file tor (lambda (p) (bdecode p))))
+           (_ (if (not torrent)
+                  (begin
+                    (print "File '" tor "' doesn't looks like valid torrent file")
+                    (exit 1)))))
+      (calculate-torrent-hash torrent)))
    (else #f)))
 

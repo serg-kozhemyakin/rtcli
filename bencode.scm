@@ -1,7 +1,7 @@
-(declare (unit bencode))
+(declare (unit bencode)
+         (export bencode
+                 bdecode))
 
-(import chicken scheme)
-(import extras)
 (import srfi-13 srfi-69)
 (import data-structures)
 
@@ -22,51 +22,13 @@
                         "e"))
         ))
 
-;; (define (read-till-delimiter port delimiter)
-;;   (do ((str "")
-;;        (char (peek-char port) (peek-char port)))
-;;       ((or (eq? char delimiter) (eof-object? char)) str)
-;;     (set! str (string-append str (string (read-char port))))))
-
-;; (define (bdecode port)
-;;   (let ((next-char (peek-char port)))
-;;     (if (eof-object? next-char)
-;;         #f
-;;         (case next-char
-;;           ((#\i)
-;;            (read-char port)
-;;            (let ((res (string->number (read-till-delimiter port #\e))))
-;;              (read-char port)
-;;              res))
-;;           ((#\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9)
-;;            (let ((len (string->number (read-till-delimiter port #\:))))
-;;              (read-char port)
-;;              (read-string len port)))
-;;           ((#\l)
-;;            (read-char port)
-;;            (do ((next-char (peek-char port) (peek-char port))
-;;                 (result '()))
-;;                ((eq? next-char #\e) (begin (read-char port) result))
-;;              (set! result (append result (list (bdecode port))))))
-;;           ((#\d)
-;;            (read-char port)
-;;            (do ((next-char (peek-char port) (peek-char port))
-;;                 (result (make-hash-table)))
-;;                ((eq? next-char #\e) (begin (read-char port) result))
-;;              (let* ((key (bdecode port))
-;;                     (value (bdecode port)))
-;;                (hash-table-set! result key value))))
-;;           (else #f)
-;;           ))))
-
 (define (read-till-delimiter port delimiter)
   (define (read-till-delimiter-internal port delimiter str)
     (let ((char (read-char port)))
       (if (or (eof-object? char)
               (char=? char delimiter))
           str
-          (read-till-delimiter-internal port delimiter (cons char str)))
-      ))
+          (read-till-delimiter-internal port delimiter (cons char str)))))
   (reverse-list->string (read-till-delimiter-internal port delimiter '())))
 
 (define (bdecode port)
