@@ -6,6 +6,7 @@ syntax: glob
 tests/*.err
 *.torrent
 rtcli
+version.scm
 
 syntax: regexp
 .*\#.*\#$
