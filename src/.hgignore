@@ -1,0 +1,12 @@
+syntax: glob
+*.orig
+*.rej
+*~
+*.o
+tests/*.err
+*.torrent
+rtcli
+version.scm
+
+syntax: regexp
+.*\#.*\#$

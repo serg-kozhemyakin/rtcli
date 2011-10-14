@@ -1,0 +1,3 @@
+(declare (unit version))
+(define rtcli:version "@VERSION@") 
+

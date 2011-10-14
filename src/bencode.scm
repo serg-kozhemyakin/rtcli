@@ -2,9 +2,6 @@
          (export bencode
                  bdecode))
 
-(import srfi-13 srfi-69)
-(import data-structures)
-
 (define (bencode obj)
   (cond ((symbol? obj)
          (let ((str (symbol->string obj)))

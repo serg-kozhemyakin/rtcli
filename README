@@ -1,0 +1,25 @@
+
+rtcli is a simple command line interface to rTorrent.
+
+Main goal -- make simple utils for using it inside of shell scripts
+automating different task for runnig rtorrent.
+
+How to compile it:
+
+1) install Chicken scheme. You can find it at http://code.call-cc.org/
+2) install several chicken's eggs:
+   chicken-install args coops xml-rpc socket simple-sha1
+3) compile rtcli in typical way:
+   ./configure; make install
+4) Have fun :)
+
+How to use it:
+
+rtcli -h will show short usage instructions
+rtcli -c connection_info -t torrent_file -a -- for adding new torrent
+rtcli -c connection_info -t torrent_file_or_hash -r -- for removing existing torrent
+rtcli -t torrent_file -x -- for calculating torrent hash that can be used in -t parameter
+rtcli -c connection_info -z some.rTorrentCmd andParameter -- call rTorrent method and display results.
+
+Found bug? Write me a mail or open it at http://code.google.com/p/rtcli/
+Have ideas for improvements? Write me a mail.

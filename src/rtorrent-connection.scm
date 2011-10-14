@@ -2,10 +2,8 @@
          (uses bencode
                rtorrent-commands))
 
-(use srfi-13)
 (use coops)
 (use xml-rpc-client xml-rpc-lolevel)
-(use data-structures)
 (use ssax)
 (use sxpath-lolevel)
 (use socket)

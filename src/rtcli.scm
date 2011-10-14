@@ -4,12 +4,7 @@
                bencode
                version))
 
-(use posix)
-(use vector-lib)
-(use srfi-13)
-(use srfi-69)
 (use args)
-(use trace)
 
 (define mode #f)
 
@@ -40,7 +35,7 @@
         (args:make-option (shutdown)    #:none     "Shutdown rTorrent"
                           (set! mode 'shutdown))
         (args:make-option (v version)   #:none     "Display version"
-                          (print "rtcli: " version:date "(" version:id ")")
+                          (print "rtcli: " rtcli:version)
                           (exit))
         (args:make-option (h help)      #:none     "Display this text"
                           (usage))))
