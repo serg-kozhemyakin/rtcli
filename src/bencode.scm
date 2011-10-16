@@ -3,11 +3,13 @@
                  bdecode))
 
 (define (bencode obj)
-  (cond ((symbol? obj)
-         (let ((str (symbol->string obj)))
-           (string-append (number->string (string-length str)) ":" str)))
-        ((number? obj)
-         (string-append "i" (number->string obj) "e"))
+  (cond ((number? obj)
+	 (string-append "i" 
+			(let* ((s (number->string obj))
+			       (sl (string-length s))
+			       (subs (if (> sl 2) (substring s (- sl 2) sl) "")))
+			  (if (string=? ".0" subs) (substring s 0 (- sl 2)) s))
+			"e"))
         ((string? obj)
          (string-append (number->string (string-length obj)) ":" obj))
         ((list? obj)
