@@ -100,9 +100,10 @@
                                              (let* ((m (car rest))
                                                     (mf (string-append "~" m))
                                                     (ml (string-length mf))
-                                                    (pos (string-contains of mf)))
-                                               (if pos
-                                                   (let ((fmt-pos (string-contains fmt mf)))
+                                                    (pos (string-contains of mf))
+                                                    (fmt-pos (string-contains fmt mf)))
+                                               (if (and pos fmt-pos)
+                                                   (begin
                                                      (set! fmt (string-replace fmt "~A"  fmt-pos (+ fmt-pos ml)))
                                                      (collect-fields (cdr rest) (alist-cons pos m lst)))
                                                    (collect-fields (cdr rest) lst))))))
