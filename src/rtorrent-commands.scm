@@ -1,8 +1,8 @@
 (declare (unit rtorrent-commands)
          (uses rtorrent-connection)
-         (local registered-xml-rpc-methods)
          (export rt:cmd
-                 register-xml-rpc-commands))
+                 register-xml-rpc-commands
+                 registered-xml-rpc-methods))
 
 ;; list of some preconfigured methods
 (define registered-xml-rpc-methods
@@ -20,7 +20,7 @@
     "d.erase"))
 
 (define (register-xml-rpc-commands list)
-  (set! registered-xml-rpc-methods (append list registered-xml-rpc-methods)))
+  (set! registered-xml-rpc-methods list))
 
 (define (rt:cmd connection request . parameters)
   (let* ((method (if (symbol? request) (symbol->string request) request))
