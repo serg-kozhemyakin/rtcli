@@ -2,6 +2,9 @@
 (declare (uses rtorrent-connection
                rtorrent-commands))
 
+(use format)
+(use numbers)
+
 (define (validate-parameters options . params)
   (let ((have-missed-params #f))
     (for-each (lambda (p)
@@ -70,51 +73,53 @@
         (begin
           (print "Adding torrent file '" tor "'" (if dest (string-append " to " dest) ""))
           (rt:cmd connection 'load_raw (string->blob (bencode torrent)))
-          ;; now it's time to sleep few secs and double check that rTorrent now knows about new file
-          (if (call/cc
-               (lambda (break)
-                 (do ((count 0 (+ 1 cont)))
-                     ((> count 5) #f)
-                   (let ((tmp (rt:cmd connection 'd.state th)))
-                     (if tmp
-                         (break #t)
-                         (sleep 1))))))
+          ;; check that torrent was added
+          (if (rt:cmd connection 'd.state th)
               (begin
                 (if dest (rt:cmd connection 'd.set_directory th dest))
                 (rt:cmd connection 'd.start th))
               (begin
                 (print "Hm. Seems torrent file wasn't added correctly. Aborting.")
-                (exit 1))
-              ))
+                (exit 1))))
         (begin
-          (print "Invalid connection url specified '" url "'")
+          (print "Invalid connection url specified '" (alist-ref 'host options) "'")
           (exit 1)))))
 
 (define (list-torrents options)
-  (define (print-torrent-info c t)
-    (let* ((left-bytes (rt:cmd c 'd.get_left_bytes t))
-           (down-bytes (rt:cmd c 'd.completed_bytes t))
-           (down-rate (rt:cmd c 'd.down.rate t))
-           (up-rate (rt:cmd c 'd.up.rate t))
-           (down-total (rt:cmd c 'd.down.total t))
-           (up-total (rt:cmd c 'd.up.total t))
-           (ratio (rt:cmd c 'd.ratio t))
-           (name (rt:cmd c 'd.name t))
-           (state (rt:cmd c 'd.state t)))
-      (print name "/" t " [" down-bytes "/" (+ down-bytes left-bytes) "]"
-             " (" up-rate "/" down-rate ")"
-             " {" up-total "/" down-total "}"
-             " " ratio
-             " " (if state "Started" "Stopped"))))
   (validate-parameters options 'host)
   (let ((connection (make-connection (alist-ref 'host options))))
     (if connection
         (let ((tl (rt:cmd connection 'download_list "")))
           (if (vector? tl)
-              (begin
-                (print "List of all torrents:")
-                (for-each (lambda (t) (print-torrent-info connection t))
-                          (vector->list tl))))))))
+              (letrec ((of (alist-ref 'format options eqv?
+                                      "~d.name/~d.hash [~d.completed_bytes/~d.get_size_bytes] (~d.up.rate/~d.down.rate) {~d.up.total/~d.down.total} ~d.ratio"))
+                       (fmt of)
+                       (collect-fields (lambda (rest lst)
+                                         (if (null? rest)
+                                             lst
+                                             (let* ((m (car rest))
+                                                    (mf (string-append "~" m))
+                                                    (ml (string-length mf))
+                                                    (pos (string-contains of mf)))
+                                               (if pos
+                                                   (let ((fmt-pos (string-contains fmt mf)))
+                                                     (set! fmt (string-replace fmt "~A"  fmt-pos (+ fmt-pos ml)))
+                                                     (collect-fields (cdr rest) (alist-cons pos m lst)))
+                                                   (collect-fields (cdr rest) lst))))))
+                       (flds (alist->hash-table
+                              (collect-fields
+                               (sort registered-xml-rpc-methods
+                                     (lambda (a b) (> (string-length a) (string-length b))))
+                               '())))
+                       (ordered-methods (map (lambda (k)
+                                               (hash-table-ref flds k)) (sort (hash-table-keys flds) <))))
+                (for-each
+                 (lambda (t)
+                   (let ((vals (map (lambda (m)
+                                      (rt:cmd connection m t)) ordered-methods)))
+                     (print (apply format fmt vals))))
+                 (vector->list tl)))))
+        )))
 
 (define (call-rtorrent options operands)
   (validate-parameters options 'host)

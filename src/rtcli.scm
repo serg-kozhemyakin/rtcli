@@ -24,6 +24,7 @@
                           (set! mode 'close))
         (args:make-option (l list)      #:none     "List registered torrents"
                           (set! mode 'list))
+        (args:make-option (format)      #:require  "Format output for list command")
         (args:make-option (r resume)    #:none     "Resume specified torrent"
                           (set! mode 'resume))
         (args:make-option (p pause)     #:none     "Pause specified torrent"
