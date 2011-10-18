@@ -13,9 +13,10 @@
                                                                           (make-string 26 #\space)
                                                                           "(http://host:port/path | host:port | path)."))
         (args:make-option (t torrent)   (required: "FILE") "Torrent filename or hash string")
-        (args:make-option (d dest)      (required: "DIR")  "Destination dir")
         (args:make-option (a add)       #:none     "Add specified torrent"
                           (set! mode 'add))
+        (args:make-option (d dest)      (required: "DIR")  "Destination dir for add operation")
+        (args:make-option (new-top-dir) (required: "DIR")  "Set new top dir for add operation (for multi-files torrents only)")
         (args:make-option (e erase)     #:none     "Remove specified torrent"
                           (set! mode 'erase))
         (args:make-option (o open)      #:none     "Open specified torrent"
@@ -24,13 +25,21 @@
                           (set! mode 'close))
         (args:make-option (l list)      #:none     "List registered torrents"
                           (set! mode 'list))
-        (args:make-option (format)      #:require  "Format output for list command")
+        (args:make-option (format)      (required: "FORMAT") (string-append "Format output for list command\n"
+                                                                            (make-string 26 #\space)
+                                                                            "Default format:\n"
+                                                                            (make-string 26 #\space)
+                                                                            "~d.name/~d.hash [~d.completed_bytes/~d.get_size_bytes] (~d.up.rate/~d.down.rate) {~d.up.total/~d.down.total} ~d.ratio"))
         (args:make-option (r resume)    #:none     "Resume specified torrent"
                           (set! mode 'resume))
         (args:make-option (p pause)     #:none     "Pause specified torrent"
                           (set! mode 'pause))
         (args:make-option (x calc)      #:none     "Calculate hash for torrent file"
                           (set! mode 'calc))
+        (args:make-option (dump)        #:none     "Dump all information from torrent file"
+                          (set! mode 'dump))
+        (args:make-option (dump-files)  #:none     "Dump files information only from torrent file"
+                          (set! mode 'dump-files))
         (args:make-option (z call)      #:none     "Call specified xml-rpc function with parameters and print results"
                           (set! mode 'call))
         (args:make-option (shutdown)    #:none     "Shutdown rTorrent"
@@ -59,7 +68,9 @@
                                (pause . ,pause-torrent)
                                (resume . ,resume-torrent)
                                (open . ,open-torrent)
-                               (close . ,close-torrent)))
+                               (close . ,close-torrent)
+                               (dump . ,dump-torrent-info)
+                               (dump-files . ,dump-files-info)))
            (code (alist-ref mode defined-commands)))
       (cond
        ((not mode) (usage))
