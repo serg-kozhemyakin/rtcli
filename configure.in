@@ -9,8 +9,42 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
-AC_CHECK_PROG(CSC, csc, YES)
-AC_CHECK_PROG(CHICKEN, chicken, YES)
+AC_DEFUN([HAVE_CHICKEN_EGGS],[
+MISSED_EGGS=""
+for egg in $1; do
+  AC_MSG_CHECKING(for $egg egg)
+  res=`chicken-status $egg |grep version`
+  if test -z "$res"; then
+    MISSED_EGGS="$MISSED_EGGS $egg"
+    AC_MSG_RESULT(missed)
+  else
+    ver=`echo $res | cut -f4 -d' '`
+    AC_MSG_RESULT($ver)
+  fi
+done
+if test -n "$MISSED_EGGS"; then
+  AC_MSG_FAILURE(next eggs missed: $MISSED_EGGS)
+fi
+])
+
+AC_DEFUN([CHECK_PROG_EXIT], [
+AC_CHECK_PROG([$1], [$2], [YES])
+if test -z "$1"; then
+  AC_MSG_FAILURE($3)
+fi
+])
+
+CHECK_PROG_EXIT([CHICKEN], [chicken], [chicken missed])
+CHECK_PROG_EXIT([CSC], [csc], [csc missed])
+CHECK_PROG_EXIT([CHICKEN_STATUS], [chicken-status], [chicken-status missed])
+
+HAVE_CHICKEN_EGGS([xml-rpc \
+                   coops \
+                   args \
+                   socket \
+                   simple-sha1 \
+                   numbers \
+                   format])
 
 AC_SUBST(CHICKENFLAGS,"")
 

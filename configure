@@ -604,8 +604,9 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 CHICKENFLAGS
-CHICKEN
+CHICKEN_STATUS
 CSC
+CHICKEN
 LN_S
 am__fastdepCC_FALSE
 am__fastdepCC_TRUE
@@ -3554,41 +3555,9 @@ $as_echo "no" >&6; }
 fi
 
 
-# Extract the first word of "csc", so it can be a program name with args.
-set dummy csc; ac_word=$2
-{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if test "${ac_cv_prog_CSC+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$CSC"; then
-  ac_cv_prog_CSC="$CSC" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_prog_CSC="YES"
-    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-IFS=$as_save_IFS
 
-fi
-fi
-CSC=$ac_cv_prog_CSC
-if test -n "$CSC"; then
-  { $as_echo "$as_me:$LINENO: result: $CSC" >&5
-$as_echo "$CSC" >&6; }
-else
-  { $as_echo "$as_me:$LINENO: result: no" >&5
-$as_echo "no" >&6; }
-fi
+
+
 
 
 # Extract the first word of "chicken", so it can be a program name with args.
@@ -3627,6 +3596,145 @@ else
 $as_echo "no" >&6; }
 fi
 
+
+if test -z "CHICKEN"; then
+  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: chicken missed
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: chicken missed
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+fi
+
+
+# Extract the first word of "csc", so it can be a program name with args.
+set dummy csc; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_prog_CSC+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$CSC"; then
+  ac_cv_prog_CSC="$CSC" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_CSC="YES"
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+fi
+fi
+CSC=$ac_cv_prog_CSC
+if test -n "$CSC"; then
+  { $as_echo "$as_me:$LINENO: result: $CSC" >&5
+$as_echo "$CSC" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+if test -z "CSC"; then
+  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: csc missed
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: csc missed
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+fi
+
+
+# Extract the first word of "chicken-status", so it can be a program name with args.
+set dummy chicken-status; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_prog_CHICKEN_STATUS+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$CHICKEN_STATUS"; then
+  ac_cv_prog_CHICKEN_STATUS="$CHICKEN_STATUS" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_CHICKEN_STATUS="YES"
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+fi
+fi
+CHICKEN_STATUS=$ac_cv_prog_CHICKEN_STATUS
+if test -n "$CHICKEN_STATUS"; then
+  { $as_echo "$as_me:$LINENO: result: $CHICKEN_STATUS" >&5
+$as_echo "$CHICKEN_STATUS" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+if test -z "CHICKEN_STATUS"; then
+  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: chicken-status missed
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: chicken-status missed
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+fi
+
+
+
+MISSED_EGGS=""
+for egg in xml-rpc \
+                   coops \
+                   args \
+                   socket \
+                   simple-sha1 \
+                   numbers \
+                   format; do
+  { $as_echo "$as_me:$LINENO: checking for $egg egg" >&5
+$as_echo_n "checking for $egg egg... " >&6; }
+  res=`chicken-status $egg |grep version`
+  if test -z "$res"; then
+    MISSED_EGGS="$MISSED_EGGS $egg"
+    { $as_echo "$as_me:$LINENO: result: missed" >&5
+$as_echo "missed" >&6; }
+  else
+    ver=`echo $res | cut -f4 -d' '`
+    { $as_echo "$as_me:$LINENO: result: $ver" >&5
+$as_echo "$ver" >&6; }
+  fi
+done
+if test -n "$MISSED_EGGS"; then
+  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: next eggs missed: $MISSED_EGGS
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: next eggs missed: $MISSED_EGGS
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+fi
 
 
 CHICKENFLAGS=""

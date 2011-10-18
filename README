@@ -8,7 +8,7 @@ How to compile it:
 
 1) install Chicken scheme. You can find it at http://code.call-cc.org/
 2) install several chicken's eggs:
-   chicken-install args coops xml-rpc socket simple-sha1
+   chicken-install args coops xml-rpc socket simple-sha1 numbers format
 3) compile rtcli in typical way:
    ./configure; make install
 4) Have fun :)
