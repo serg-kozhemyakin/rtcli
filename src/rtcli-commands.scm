@@ -56,7 +56,6 @@
   (validate-parameters options 'torrent 'host)
   (let* ((tor  (alist-ref 'torrent options))
          (dest (alist-ref 'dest options))
-         (new-top-dir (alist-ref 'new-top-dir options))
          (_ (if (not (file-exists? tor))
                 (begin
                   (print "Can't find file '" tor "'.")
@@ -68,10 +67,6 @@
                 (begin
                   (print "File '" tor "' doesn't looks like valid torrent file")
                   (exit 1))))
-         (files (hash-table-ref/default (hash-table-ref torrent "info") "files" #f))
-         (_ (if (and new-top-dir
-                     files)
-                (hash-table-set! (hash-table-ref torrent "info") "name" new-top-dir)))
          (th (calculate-torrent-hash torrent))
          (connection (make-connection (alist-ref 'host options))))
     (if (and th

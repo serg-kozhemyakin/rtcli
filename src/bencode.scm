@@ -10,11 +10,11 @@
         ((string? obj)
          (string-append (number->string (string-length obj)) ":" obj))
         ((list? obj)
-         (string-append "l" (apply string-append (map bencode obj)) "e"))
+         (string-append "l" (string-join (map bencode obj) "") "e" ))
         ((hash-table? obj)
-         (string-append "d" (apply string-append
+         (string-append "d" (string-join
                                    (map (lambda (key) (string-append (bencode key) (bencode (hash-table-ref obj key))))
-                                        (sort (hash-table-keys obj) string<)))
+                                        (sort (hash-table-keys obj) string<)) "")
                         "e"))
         ))
 

@@ -16,7 +16,6 @@
         (args:make-option (a add)       #:none     "Add specified torrent"
                           (set! mode 'add))
         (args:make-option (d dest)      (required: "DIR")  "Destination dir for add operation")
-        (args:make-option (new-top-dir) (required: "DIR")  "Set new top dir for add operation (for multi-files torrents only)")
         (args:make-option (e erase)     #:none     "Remove specified torrent"
                           (set! mode 'erase))
         (args:make-option (o open)      #:none     "Open specified torrent"
