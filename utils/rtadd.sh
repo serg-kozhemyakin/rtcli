@@ -38,7 +38,7 @@ find $root -type f -name *.torrent 2> /dev/null | while read torrent; do
             [ `echo $registered | awk '{print $NF}'` = $thash ] && add='no'
         fi
     else
-        touch $tdname/processed
+        touch "$tdname/processed"
     fi
     if [ $add = "yes" ]; then
         # torrent wasn't registered or its hash was changed
