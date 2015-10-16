@@ -43,6 +43,8 @@ HAVE_CHICKEN_EGGS([xml-rpc \
                    args \
                    socket \
                    simple-sha1 \
+                   sha \
+                   srfi-19 \
                    numbers \
                    format])
 
