@@ -15,6 +15,9 @@
                     ,@(xml-rpc-parsers))))
 (set! xml-rpc-parsers xml-rpc-parsers-with-i8)
 
+(set! response-parsers
+  (make-parameter (list http-0.9-response-parser http-1.x-response-parser http-1.0-response-parser)))
+
 (define-class <rtorrent-connection> ()
   ((client initform: #f
            accessor: connection-client)))
@@ -158,4 +161,3 @@
                     (exit 1)))))
       (calculate-torrent-hash torrent)))
    (else #f)))
-
